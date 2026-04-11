@@ -10,6 +10,12 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (authService.isAuthenticated()) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

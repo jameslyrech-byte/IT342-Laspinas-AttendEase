@@ -15,10 +15,10 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:your-super-secret-key-change-this-in-production}")
     private String jwtSecret;
     
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:86400000}")
     private long jwtExpirationMs;
     
     public String generateToken(String email, Long userId) {
@@ -64,9 +64,8 @@ public class JwtUtil {
     }
     
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(getSigningKey())
-                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }

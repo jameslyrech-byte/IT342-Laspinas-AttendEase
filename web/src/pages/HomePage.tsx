@@ -29,32 +29,24 @@ export default function HomePage() {
       <main className="content">
         <div className="welcome-section">
           <h2>Welcome, {user?.firstname}!</h2>
-          <p className="subtitle">E-Commerce Shopping Experience</p>
+          <p className="subtitle">Dashboard</p>
         </div>
 
-        <section className="features">
-          <h3>Featured Services</h3>
-          <div className="feature-grid">
-            <div className="feature-card">
-              <h4>Browse Products</h4>
-              <p>Explore our wide range of products</p>
-              <button>View Products</button>
-            </div>
-            <div className="feature-card">
-              <h4>Shopping Cart</h4>
-              <p>Manage your items and checkout</p>
-              <button>Go to Cart</button>
-            </div>
-            <div className="feature-card">
-              <h4>Order History</h4>
-              <p>Track your orders and status</p>
-              <button>View Orders</button>
-            </div>
-            <div className="feature-card">
-              <h4>Account Settings</h4>
-              <p>Update your profile information</p>
-              <button>Settings</button>
-            </div>
+        <section className="dashboard-widgets">
+          <div className="widget">
+            <h3>Attendance</h3>
+            <p>You have 0 check-ins this week.</p>
+            <button className="small-btn">View Attendance</button>
+          </div>
+          <div className="widget">
+            <h3>Profile</h3>
+            <p>Manage your account details.</p>
+            <button className="small-btn">Edit Profile</button>
+          </div>
+          <div className="widget">
+            <h3>Settings</h3>
+            <p>Update preferences and security.</p>
+            <button className="small-btn">Go to Settings</button>
           </div>
         </section>
       </main>

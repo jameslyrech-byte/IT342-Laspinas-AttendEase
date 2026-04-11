@@ -21,7 +21,11 @@ export default function RegisterPage() {
       [e.target.name]: e.target.value,
     });
   };
-
+  React.useEffect(() => {
+    if (authService.isAuthenticated()) {
+      navigate('/');
+    }
+  }, [navigate]);
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
