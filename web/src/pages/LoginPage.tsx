@@ -25,7 +25,10 @@ export default function LoginPage() {
       await authService.login({ email, password } as LoginData);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data || 'Login failed');
+      const message = typeof err.response?.data === 'string'
+        ? err.response.data
+        : err.response?.data?.message;
+      setError(message || 'Login failed. Please check your email, password, and backend server.');
     } finally {
       setLoading(false);
     }
@@ -35,11 +38,13 @@ export default function LoginPage() {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login</h2>
+        <p className="auth-subtitle">Sign in to manage your attendance.</p>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label>Email</label>
             <input
+              className="auth-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -49,17 +54,17 @@ export default function LoginPage() {
           <div className="form-group">
             <label>Password</label>
             <input
+              className="auth-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <button type="submit" disabled={loading}>
+          <button className="auth-btn" type="submit" disabled={loading}>
             {loading ? 'Loading...' : 'Login'}
           </button>
         </form>
-<<<<<<< HEAD
         <button
           type="button"
           className="oauth-button"
@@ -67,10 +72,8 @@ export default function LoginPage() {
         >
           Continue with Google
         </button>
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
-        <p>
-          Don't have an account? <Link to="/register">Register</Link>
+        <p className="auth-footer">
+          Don't have an account? <Link className="auth-link" to="/register">Register</Link>
         </p>
       </div>
     </div>

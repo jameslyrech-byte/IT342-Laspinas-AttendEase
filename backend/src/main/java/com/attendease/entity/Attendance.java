@@ -36,9 +36,3 @@ public class Attendance {
         createdAt = LocalDateTime.now();
     }
 }
-
-enum AttendanceStatus {
-    PRESENT,
-    ABSENT,
-    LATE
-}

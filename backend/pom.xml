@@ -51,7 +51,13 @@
             <scope>runtime</scope>
         </dependency>
 
-<<<<<<< HEAD
+        <!-- PostgreSQL Driver for Docker Compose setup -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- H2 in-memory database for local development if no external datasource is configured -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -59,8 +65,6 @@
             <scope>runtime</scope>
         </dependency>
 
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -80,15 +84,12 @@
             <scope>runtime</scope>
         </dependency>
 
-<<<<<<< HEAD
         <!-- Spring OAuth2 Client -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

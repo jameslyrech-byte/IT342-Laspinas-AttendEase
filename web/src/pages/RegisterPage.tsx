@@ -9,11 +9,7 @@ export default function RegisterPage() {
     password: '',
     firstname: '',
     lastname: '',
-<<<<<<< HEAD
     role: 'STUDENT',
-=======
-    role: 'CUSTOMER',
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +35,10 @@ export default function RegisterPage() {
       await authService.register(formData);
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data || 'Registration failed');
+      const message = typeof err.response?.data === 'string'
+        ? err.response.data
+        : err.response?.data?.message;
+      setError(message || 'Registration failed. Please check that the backend is running.');
     } finally {
       setLoading(false);
     }
@@ -49,11 +48,13 @@ export default function RegisterPage() {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Register</h2>
+        <p className="auth-subtitle">Create your AttendEase account.</p>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleRegister}>
           <div className="form-group">
             <label>Email</label>
             <input
+              className="auth-input"
               type="email"
               name="email"
               value={formData.email}
@@ -65,6 +66,7 @@ export default function RegisterPage() {
             <div className="form-group">
               <label>First Name</label>
               <input
+                className="auth-input"
                 type="text"
                 name="firstname"
                 value={formData.firstname}
@@ -75,6 +77,7 @@ export default function RegisterPage() {
             <div className="form-group">
               <label>Last Name</label>
               <input
+                className="auth-input"
                 type="text"
                 name="lastname"
                 value={formData.lastname}
@@ -86,6 +89,7 @@ export default function RegisterPage() {
           <div className="form-group">
             <label>Password</label>
             <input
+              className="auth-input"
               type="password"
               name="password"
               value={formData.password}
@@ -96,24 +100,21 @@ export default function RegisterPage() {
           <div className="form-group">
             <label>Role</label>
             <select
+              className="auth-select"
               name="role"
               value={formData.role}
               onChange={handleInputChange}
             >
-<<<<<<< HEAD
               <option value="STUDENT">Student</option>
-=======
-              <option value="CUSTOMER">Customer</option>
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
               <option value="ADMIN">Admin</option>
             </select>
           </div>
-          <button type="submit" disabled={loading}>
+          <button className="auth-btn" type="submit" disabled={loading}>
             {loading ? 'Loading...' : 'Register'}
           </button>
         </form>
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
+        <p className="auth-footer">
+          Already have an account? <Link className="auth-link" to="/login">Login</Link>
         </p>
       </div>
     </div>

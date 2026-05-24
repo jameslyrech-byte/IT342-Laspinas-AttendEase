@@ -4,10 +4,7 @@ import { authService } from './services/authService';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
-<<<<<<< HEAD
 import OAuthSuccessPage from './pages/OAuthSuccessPage';
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
 import './App.css';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -19,10 +16,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-<<<<<<< HEAD
         <Route path="/oauth-success" element={<OAuthSuccessPage />} />
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
         <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/"

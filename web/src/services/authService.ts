@@ -39,15 +39,10 @@ export const authService = {
     const response = await api.post('/auth/register', data);
     return response.data;
   },
-
-<<<<<<< HEAD
   loginWithToken: (token: string, user: { id: number; email: string; firstname: string; lastname: string; role: string }) => {
     localStorage.setItem('accessToken', token);
     localStorage.setItem('user', JSON.stringify(user));
   },
-
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
   logout: () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -56,7 +51,16 @@ export const authService = {
 
   getCurrentUser: () => {
     const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    if (!user) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(user);
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
   },
 
   isAuthenticated: (): boolean => {

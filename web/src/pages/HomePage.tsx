@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-=======
-import React from 'react';
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { attendanceService, AttendanceRecord } from '../services/attendanceService';
 import { authService } from '../services/authService';
 import '../styles/home.css';
 
-<<<<<<< HEAD
 type View = 'dashboard' | 'attendance' | 'profile' | 'settings';
 
 export default function HomePage() {
@@ -15,101 +11,242 @@ export default function HomePage() {
   const user = authService.getCurrentUser();
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [attendanceMarked, setAttendanceMarked] = useState(false);
-  const [checkInTime, setCheckInTime] = useState<string | null>(null);
+  const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
+  const [loadingAttendance, setLoadingAttendance] = useState(true);
+  const [savingAttendance, setSavingAttendance] = useState(false);
+  const [error, setError] = useState('');
 
-  // Update clock every second
+  const todayRecord = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return attendance.find((record) => record.date === today);
+  }, [attendance]);
+
+  const presentCount = attendance.filter((record) => record.status === 'PRESENT').length;
+  const attendanceRate = attendance.length ? Math.round((presentCount / attendance.length) * 100) : 0;
+
+  const getApiErrorMessage = (err: any, fallback: string) => {
+    const data = err?.response?.data;
+    if (typeof data === 'string') {
+      return data;
+    }
+    if (typeof data?.message === 'string') {
+      return data.message;
+    }
+    if (typeof data?.error === 'string') {
+      return data.error;
+    }
+    if (err?.message) {
+      return err.message;
+    }
+    return fallback;
+  };
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-=======
-export default function HomePage() {
-  const navigate = useNavigate();
-  const user = authService.getCurrentUser();
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
+
+  useEffect(() => {
+    loadAttendance();
+  }, []);
+
+  const loadAttendance = async () => {
+    setLoadingAttendance(true);
+    setError('');
+    try {
+      const records = await attendanceService.getMine();
+      setAttendance(records);
+    } catch (err: any) {
+      setError(getApiErrorMessage(err, 'Unable to load attendance records'));
+    } finally {
+      setLoadingAttendance(false);
+    }
+  };
 
   const handleLogout = () => {
     authService.logout();
     navigate('/login');
   };
 
-<<<<<<< HEAD
-  const handleMarkAttendance = () => {
-    setAttendanceMarked(true);
-    setCheckInTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  const handleMarkAttendance = async () => {
+    setSavingAttendance(true);
+    setError('');
+    try {
+      const record = await attendanceService.checkIn();
+      setAttendance((records) => {
+        const exists = records.some((item) => item.id === record.id);
+        return exists ? records : [record, ...records];
+      });
+    } catch (err: any) {
+      setError(getApiErrorMessage(err, 'Unable to save attendance'));
+    } finally {
+      setSavingAttendance(false);
+    }
   };
+
+  const formatDate = (value: string) =>
+    new Date(`${value}T00:00:00`).toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+  const formatTime = (value?: string) =>
+    value
+      ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : '-';
 
   const renderDashboard = () => (
     <div className="view-container">
-      <div className="welcome-section" style={{ textAlign: 'left', marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <section className="page-heading">
         <div>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>Hello, {user?.firstname || 'User'}! 👋</h2>
-          <p className="subtitle">Here's what's happening with your attendance today.</p>
+          <p className="eyebrow">Dashboard</p>
+          <h2>Welcome, {user?.firstname || 'Student'}</h2>
+          <p className="subtitle">Attendance, time, settings, and profile in one place.</p>
         </div>
-        <div style={{ textAlign: 'right', background: 'var(--bg-card)', padding: '1rem 1.5rem', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
-          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary)' }}>{currentTime.toLocaleTimeString()}</div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+        <div className="time-panel">
+          <strong>{currentTime.toLocaleTimeString()}</strong>
+          <span>{currentTime.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</span>
         </div>
-      </div>
+      </section>
 
-      <div className="dashboard-grid">
-        {/* Attendance Action Card */}
-        <div className="glass-card" style={{ border: attendanceMarked ? '1px solid #10b981' : '1px solid var(--primary)' }}>
-          <h3>📅 Daily Attendance</h3>
-          <p>Ready for today's session? Mark your presence below.</p>
-          {!attendanceMarked ? (
-            <button className="cool-btn" onClick={handleMarkAttendance}>
-              Mark Attendance for Today
-            </button>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '1rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px' }}>
-              <div style={{ color: '#10b981', fontWeight: 700, fontSize: '1.1rem' }}>✓ Checked In Successfully</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Recorded at: {checkInTime}</div>
+      {error && <div className="app-alert">{error}</div>}
+
+      <section className="stats-row">
+        <div className="stat-card">
+          <span className="stat-icon">A</span>
+          <div className="stat-info">
+            <h4>Total Records</h4>
+            <span className="value">{attendance.length}</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <span className="stat-icon">%</span>
+          <div className="stat-info">
+            <h4>Attendance Rate</h4>
+            <span className="value">{attendanceRate}%</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <span className="stat-icon">D</span>
+          <div className="stat-info">
+            <h4>Today</h4>
+            <span className="value">{todayRecord ? 'Present' : 'Pending'}</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="dashboard-grid dashboard-hub">
+        <div className={`glass-card hub-card attendance-card ${todayRecord ? 'success' : ''}`}>
+          <div className="hub-card-top">
+            <span className="hub-icon">A</span>
+            <h3>Attendance</h3>
+          </div>
+          <p>{todayRecord ? 'Your attendance for today is already saved.' : 'Mark your attendance for today.'}</p>
+          {todayRecord ? (
+            <div className="checkin-confirmation">
+              <strong>Checked in</strong>
+              <span>{formatTime(todayRecord.createdAt)}</span>
             </div>
+          ) : (
+            <button className="cool-btn" onClick={handleMarkAttendance} disabled={savingAttendance}>
+              {savingAttendance ? 'Saving...' : 'Mark Present'}
+            </button>
+          )}
+          <button className="cool-btn secondary card-link" onClick={() => setActiveView('attendance')}>View Attendance</button>
+        </div>
+
+        <div className="glass-card hub-card time-card">
+          <div className="hub-card-top">
+            <span className="hub-icon">T</span>
+            <h3>Time</h3>
+          </div>
+          <div className="clock-display">{currentTime.toLocaleTimeString()}</div>
+          <p>{currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+
+        <div className="glass-card hub-card profile-summary">
+          <div className="hub-card-top">
+            <span className="hub-icon">U</span>
+            <h3>User Profile</h3>
+          </div>
+          <p>{user?.firstname} {user?.lastname}<br />{user?.email}</p>
+          <div className="profile-pill">{user?.role || 'STUDENT'}</div>
+          <button className="cool-btn secondary" onClick={() => setActiveView('profile')}>View Profile</button>
+        </div>
+
+        <div className="glass-card hub-card settings-summary">
+          <div className="hub-card-top">
+            <span className="hub-icon">S</span>
+            <h3>Settings</h3>
+          </div>
+          <p>Manage reminders, dashboard clock, and display preferences.</p>
+          <button className="cool-btn secondary" onClick={() => setActiveView('settings')}>Open Settings</button>
+        </div>
+      </section>
+
+      <section className="glass-card recent-card">
+        <div className="section-title-row">
+          <h3>Recent Attendance</h3>
+          <button className="small-text-button" onClick={() => setActiveView('attendance')}>View all</button>
+        </div>
+        <div className="activity-list recent-list">
+          {attendance.slice(0, 4).map((record) => (
+            <div className="activity-item" key={record.id}>
+              <span className="activity-dot" />
+              <div className="activity-content">
+                <div className="activity-title">{record.status}</div>
+                <div className="activity-time">{formatDate(record.date)} at {formatTime(record.createdAt)}</div>
+              </div>
+            </div>
+          ))}
+          {!attendance.length && (
+            <div className="empty-state">{loadingAttendance ? 'Loading records...' : 'No attendance records yet.'}</div>
           )}
         </div>
-
-        <div className="glass-card">
-          <h3>📊 Weekly Summary</h3>
-          <p>You have maintained a 95% attendance rate this semester. Keep up the good work!</p>
-          <button className="cool-btn secondary" onClick={() => setActiveView('attendance')}>View Detailed Logs</button>
-        </div>
-        
-        <div className="glass-card">
-          <h3>👤 Profile Status</h3>
-          <p>Your profile information is 80% complete. Add a profile picture to reach 100%.</p>
-          <button className="cool-btn secondary" onClick={() => setActiveView('profile')}>Complete Profile</button>
-        </div>
-      </div>
+      </section>
     </div>
   );
 
   const renderAttendance = () => (
     <div className="view-container">
-      <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Attendance History</h2>
-      <div className="glass-card">
+      <section className="page-heading compact">
+        <div>
+          <p className="eyebrow">Database records</p>
+          <h2>Attendance History</h2>
+        </div>
+        <button className="cool-btn refresh-btn" onClick={loadAttendance} disabled={loadingAttendance}>
+          {loadingAttendance ? 'Refreshing...' : 'Refresh'}
+        </button>
+      </section>
+
+      {error && <div className="app-alert">{error}</div>}
+
+      <div className="glass-card table-card">
         <table className="cool-table">
           <thead>
             <tr>
               <th>Date</th>
               <th>Status</th>
-              <th>Course</th>
-              <th>Remarks</th>
+              <th>Saved At</th>
+              <th>User ID</th>
             </tr>
           </thead>
           <tbody>
-            {attendanceMarked && (
-              <tr>
-                <td>{currentTime.toLocaleDateString()}</td>
-                <td><span className="badge-present">PRESENT</span></td>
-                <td>Current Session</td>
-                <td>Self Check-in at {checkInTime}</td>
+            {attendance.map((record) => (
+              <tr key={record.id}>
+                <td>{formatDate(record.date)}</td>
+                <td><span className={`status-badge status-${record.status.toLowerCase()}`}>{record.status}</span></td>
+                <td>{formatTime(record.createdAt)}</td>
+                <td>{record.userId}</td>
               </tr>
-            )}
-            {!attendanceMarked && (
+            ))}
+            {!attendance.length && (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No attendance records found.</td>
+                <td colSpan={4} className="empty-cell">
+                  {loadingAttendance ? 'Loading attendance records...' : 'No attendance records found.'}
+                </td>
               </tr>
             )}
           </tbody>
@@ -120,31 +257,33 @@ export default function HomePage() {
 
   const renderProfile = () => (
     <div className="view-container">
-      <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>User Profile</h2>
-      <div className="glass-card" style={{ maxWidth: '600px' }}>
-        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', alignItems: 'center' }}>
-          <div className="avatar-circle" style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
-            {user?.firstname?.[0] || 'U'}
-          </div>
+      <section className="page-heading compact">
+        <div>
+          <p className="eyebrow">User table</p>
+          <h2>User Profile</h2>
+        </div>
+      </section>
+      <div className="glass-card profile-card">
+        <div className="profile-header">
+          <div className="avatar-circle large">{user?.firstname?.[0] || 'U'}</div>
           <div>
-            <h4 style={{ fontSize: '1.5rem' }}>{user?.firstname} {user?.lastname}</h4>
-            <p style={{ color: 'var(--text-muted)' }}>{user?.role || 'Student'}</p>
+            <h3>{user?.firstname} {user?.lastname}</h3>
+            <p>{user?.role || 'STUDENT'}</p>
           </div>
         </div>
-        <div style={{ display: 'grid', gap: '1.5rem' }}>
-          <div>
-            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>First Name</label>
-            <input type="text" className="cool-input" defaultValue={user?.firstname} />
-          </div>
-          <div>
-            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Last Name</label>
-            <input type="text" className="cool-input" defaultValue={user?.lastname} />
-          </div>
-          <div>
-            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Email Address</label>
-            <input type="email" className="cool-input" defaultValue={user?.email} readOnly style={{ opacity: 0.7 }} />
-          </div>
-          <button className="cool-btn" style={{ marginTop: '1rem' }}>Save Changes</button>
+        <div className="profile-grid">
+          <label>
+            <span>First Name</span>
+            <input type="text" className="cool-input" defaultValue={user?.firstname} readOnly />
+          </label>
+          <label>
+            <span>Last Name</span>
+            <input type="text" className="cool-input" defaultValue={user?.lastname} readOnly />
+          </label>
+          <label className="wide-field">
+            <span>Email Address</span>
+            <input type="email" className="cool-input" defaultValue={user?.email} readOnly />
+          </label>
         </div>
       </div>
     </div>
@@ -152,23 +291,25 @@ export default function HomePage() {
 
   const renderSettings = () => (
     <div className="view-container">
-      <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>System Settings</h2>
-      <div className="glass-card" style={{ maxWidth: '600px' }}>
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
-            <span>Push Notifications</span>
-            <input type="checkbox" defaultChecked />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
-            <span>Dark Mode Appearance</span>
-            <input type="checkbox" defaultChecked />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
-            <span>Show Profile to Others</span>
-            <input type="checkbox" />
-          </div>
-          <button className="cool-btn" style={{ marginTop: '2rem' }}>Apply Preferences</button>
+      <section className="page-heading compact">
+        <div>
+          <p className="eyebrow">Preferences</p>
+          <h2>Settings</h2>
         </div>
+      </section>
+      <div className="glass-card settings-card">
+        <label className="setting-row">
+          <span>Email reminders</span>
+          <input type="checkbox" defaultChecked />
+        </label>
+        <label className="setting-row">
+          <span>Dashboard clock</span>
+          <input type="checkbox" defaultChecked />
+        </label>
+        <label className="setting-row">
+          <span>Compact history table</span>
+          <input type="checkbox" />
+        </label>
       </div>
     </div>
   );
@@ -178,50 +319,37 @@ export default function HomePage() {
       <aside className="sidebar">
         <div className="logo-area">
           <h1>AttendEase</h1>
+          <span>laspinas_db</span>
         </div>
-        
-        <nav className="nav-links">
-          <button 
-            className={`nav-item ${activeView === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveView('dashboard')}
-          >
-            <span>🏠 Dashboard</span>
-          </button>
-          <button 
-            className={`nav-item ${activeView === 'attendance' ? 'active' : ''}`}
-            onClick={() => setActiveView('attendance')}
-          >
-            <span>📅 Attendance</span>
-          </button>
-          <button 
-            className={`nav-item ${activeView === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveView('profile')}
-          >
-            <span>👤 Profile</span>
-          </button>
-          <button 
-            className={`nav-item ${activeView === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveView('settings')}
-          >
-            <span>⚙️ Settings</span>
-          </button>
 
+        <nav className="nav-links">
+          <button className={`nav-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
+            Dashboard
+          </button>
+          <button className={`nav-item ${activeView === 'attendance' ? 'active' : ''}`} onClick={() => setActiveView('attendance')}>
+            Attendance
+          </button>
+          <button className={`nav-item ${activeView === 'profile' ? 'active' : ''}`} onClick={() => setActiveView('profile')}>
+            Profile
+          </button>
+          <button className={`nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => setActiveView('settings')}>
+            Settings
+          </button>
           <button onClick={handleLogout} className="nav-item logout-nav-item">
-            <span>🚪 Logout</span>
+            Logout
           </button>
         </nav>
       </aside>
 
       <main className="main-content">
         <header className="header-top">
-          <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            System Status: <span style={{ color: '#10b981' }}>● Online</span>
+          <div className="connection-status">
+            <span />
+            MySQL 127.0.0.1:3307
           </div>
           <div className="user-badge">
-            <span style={{ fontWeight: 600 }}>{user?.firstname}</span>
-            <div className="avatar-circle">
-              {user?.firstname?.[0]}
-            </div>
+            <strong>{user?.firstname || 'User'}</strong>
+            <div className="avatar-circle">{user?.firstname?.[0] || 'U'}</div>
           </div>
         </header>
 
@@ -229,55 +357,7 @@ export default function HomePage() {
         {activeView === 'attendance' && renderAttendance()}
         {activeView === 'profile' && renderProfile()}
         {activeView === 'settings' && renderSettings()}
-
-        <footer style={{ marginTop: '4rem', color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center' }}>
-          &copy; 2026 AttendEase Intelligence Systems. All rights reserved.
-        </footer>
       </main>
-=======
-  return (
-    <div className="home-container">
-      <header className="navbar">
-        <h1>AttendEase</h1>
-        <nav>
-          <a href="/">Home</a>
-          <a href="/products">Products</a>
-          <a href="/cart">Cart</a>
-          <button onClick={handleLogout} className="logout-btn">
-            Logout
-          </button>
-        </nav>
-      </header>
-
-      <main className="content">
-        <div className="welcome-section">
-          <h2>Welcome, {user?.firstname}!</h2>
-          <p className="subtitle">Dashboard</p>
-        </div>
-
-        <section className="dashboard-widgets">
-          <div className="widget">
-            <h3>Attendance</h3>
-            <p>You have 0 check-ins this week.</p>
-            <button className="small-btn">View Attendance</button>
-          </div>
-          <div className="widget">
-            <h3>Profile</h3>
-            <p>Manage your account details.</p>
-            <button className="small-btn">Edit Profile</button>
-          </div>
-          <div className="widget">
-            <h3>Settings</h3>
-            <p>Update preferences and security.</p>
-            <button className="small-btn">Go to Settings</button>
-          </div>
-        </section>
-      </main>
-
-      <footer className="footer">
-        <p>&copy; 2024 AttendEase. All rights reserved.</p>
-      </footer>
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
     </div>
   );
 }

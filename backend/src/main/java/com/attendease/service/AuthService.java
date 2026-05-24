@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-<<<<<<< HEAD
 import java.util.UUID;
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
 
 @Service
 @RequiredArgsConstructor
@@ -32,32 +29,31 @@ public class AuthService {
     
     @Transactional
     public UserDto register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        String email = normalizeEmail(request.getEmail());
+        if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already registered");
         }
         
         User user = new User();
-        user.setEmail(request.getEmail());
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
-<<<<<<< HEAD
-        String roleValue = request.getRole() == null ? "STUDENT" : request.getRole().trim().toUpperCase();
+        String roleValue = request.getRole() == null ? "CUSTOMER" : request.getRole().trim().toUpperCase();
+        if ("STUDENT".equals(roleValue)) {
+            roleValue = "CUSTOMER";
+        }
         try {
             user.setRole(UserRole.valueOf(roleValue));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Role must be STUDENT or ADMIN");
         }
-=======
-        user.setRole(UserRole.valueOf(request.getRole().toUpperCase()));
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
         
         User savedUser = userRepository.save(user);
         return mapToUserDto(savedUser);
     }
     
     @Transactional
-<<<<<<< HEAD
     public UserDto processOAuth2User(String email, String firstname, String lastname) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("OAuth2 user must provide an email");
@@ -70,7 +66,7 @@ public class AuthService {
                     newUser.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
                     newUser.setFirstname(firstname != null ? firstname : "");
                     newUser.setLastname(lastname != null ? lastname : "");
-                    newUser.setRole(UserRole.STUDENT);
+                    newUser.setRole(UserRole.CUSTOMER);
                     return userRepository.save(newUser);
                 });
 
@@ -78,15 +74,15 @@ public class AuthService {
     }
     
     @Transactional
-=======
->>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
     public AuthResponse login(LoginRequest request) {
         try {
             if (request.getEmail() == null || request.getPassword() == null) {
                 throw new IllegalArgumentException("Email and password are required");
             }
+
+            String email = normalizeEmail(request.getEmail());
             
-            User user = userRepository.findByEmail(request.getEmail())
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("Email not found"));
             
             if (user.getPasswordHash() == null) {
@@ -123,7 +119,14 @@ public class AuthService {
                 user.getEmail(),
                 user.getFirstname(),
                 user.getLastname(),
-                user.getRole().toString()
+                user.getRole() == UserRole.CUSTOMER ? "STUDENT" : user.getRole().toString()
         );
+    }
+
+    private String normalizeEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        return email.trim().toLowerCase();
     }
 }

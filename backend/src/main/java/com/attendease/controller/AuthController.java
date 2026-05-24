@@ -25,6 +25,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
         }
     }
     
@@ -34,6 +36,8 @@ public class AuthController {
             AuthResponse authResponse = authService.login(request);
             return ResponseEntity.ok(authResponse);
         } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
