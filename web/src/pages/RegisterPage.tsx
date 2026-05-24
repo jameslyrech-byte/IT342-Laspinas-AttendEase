@@ -9,7 +9,11 @@ export default function RegisterPage() {
     password: '',
     firstname: '',
     lastname: '',
+<<<<<<< HEAD
     role: 'STUDENT',
+=======
+    role: 'CUSTOMER',
+>>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -96,7 +100,11 @@ export default function RegisterPage() {
               value={formData.role}
               onChange={handleInputChange}
             >
+<<<<<<< HEAD
               <option value="STUDENT">Student</option>
+=======
+              <option value="CUSTOMER">Customer</option>
+>>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
               <option value="ADMIN">Admin</option>
             </select>
           </div>

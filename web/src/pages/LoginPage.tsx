@@ -59,6 +59,7 @@ export default function LoginPage() {
             {loading ? 'Loading...' : 'Login'}
           </button>
         </form>
+<<<<<<< HEAD
         <button
           type="button"
           className="oauth-button"
@@ -66,6 +67,8 @@ export default function LoginPage() {
         >
           Continue with Google
         </button>
+=======
+>>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
         <p>
           Don't have an account? <Link to="/register">Register</Link>
         </p>

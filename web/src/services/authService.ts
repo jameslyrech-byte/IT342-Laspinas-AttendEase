@@ -40,11 +40,14 @@ export const authService = {
     return response.data;
   },
 
+<<<<<<< HEAD
   loginWithToken: (token: string, user: { id: number; email: string; firstname: string; lastname: string; role: string }) => {
     localStorage.setItem('accessToken', token);
     localStorage.setItem('user', JSON.stringify(user));
   },
 
+=======
+>>>>>>> 22472d3ea753ec6ffce45255a8580bf00526b655
   logout: () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
