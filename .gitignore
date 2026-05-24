@@ -1,0 +1,103 @@
+# .gitignore for AttendEase Project
+
+## Backend (Maven/Java)
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.DS_Store
+backend/.idea/
+backend/*.iml
+backend/*.log
+backend/build/
+backend/.gradle/
+backend/out/
+
+## Web (Node.js/npm)
+web/node_modules/
+web/dist/
+web/build/
+web/.vscode/
+web/.env
+web/.env.local
+web/.env.*.local
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+web/.DS_Store
+
+## Mobile (Android/Gradle)
+mobile/.gradle/
+mobile/.idea/
+mobile/build/
+mobile/local.properties
+mobile/.DS_Store
+mobile/*.jks
+mobile/app/release/
+mobile/*.apk
+mobile/*.aab
+mobile/gradlew.bat
+
+## IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+thumbs.db
+
+## OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+## Secrets & Configuration
+.env
+.env.local
+.env.production
+secrets/
+*.key
+*.pem
+*.crt
+*.jks
+
+## IDE specific
+.vscode/
+.idea/
+*.code-workspace
+
+## Package managers
+package-lock.json
+yarn.lock
+
+## Database
+*.sql
+*.sqlite
+*.db
+
+## Logs
+logs/
+*.log
+npm-debug.log*
+
+## Build artifacts
+dist/
+build/
+out/
+*.jar
+*.war
+*.zip
+
+## Temporary files
+tmp/
+temp/
+*.tmp
