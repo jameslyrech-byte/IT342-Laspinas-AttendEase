@@ -75,7 +75,7 @@ cd mobile
 ### User Management
 - User registration and login
 - JWT-based authentication
-- Role-based access control (CUSTOMER, ADMIN)
+- Role-based access control (STUDENT, ADMIN)
 - Password hashing with bcrypt
 
 ### Authentication Endpoints
@@ -91,7 +91,7 @@ cd mobile
 - password_hash
 - firstname
 - lastname
-- role (ENUM: CUSTOMER, ADMIN)
+- role (ENUM: STUDENT, ADMIN)
 - created_at
 - updated_at
 
@@ -122,7 +122,7 @@ POST /auth/register
   "password": "password123",
   "firstname": "John",
   "lastname": "Doe",
-  "role": "CUSTOMER"
+  "role": "STUDENT"
 }
 ```
 
@@ -143,7 +143,7 @@ Response:
     "email": "user@example.com",
     "firstname": "John",
     "lastname": "Doe",
-    "role": "CUSTOMER"
+    "role": "STUDENT"
   }
 }
 ```

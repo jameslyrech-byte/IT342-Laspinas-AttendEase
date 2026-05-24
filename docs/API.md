@@ -45,7 +45,7 @@ All responses are in JSON format with the following structure:
   "password": "password123",
   "firstname": "John",
   "lastname": "Doe",
-  "role": "CUSTOMER"
+  "role": "STUDENT"
 }
 ```
 - **Response** (201 Created):
@@ -55,7 +55,7 @@ All responses are in JSON format with the following structure:
   "email": "user@example.com",
   "firstname": "John",
   "lastname": "Doe",
-  "role": "CUSTOMER"
+  "role": "STUDENT"
 }
 ```
 - **Error Cases**:
@@ -82,7 +82,7 @@ All responses are in JSON format with the following structure:
     "email": "user@example.com",
     "firstname": "John",
     "lastname": "Doe",
-    "role": "CUSTOMER"
+    "role": "STUDENT"
   }
 }
 ```
@@ -171,7 +171,7 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
     "password": "password",
     "firstname": "Test",
     "lastname": "User",
-    "role": "CUSTOMER"
+    "role": "STUDENT"
   }'
 
 # Login

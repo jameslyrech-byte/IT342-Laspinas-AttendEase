@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .antMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**", "/api/v1/auth/**", "/api/v1/oauth2/**", "/api/v1/login/oauth2/**").permitAll()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/api/v1/products/**").permitAll()
-                .antMatchers("/api/v1/cart/**").authenticated()
+                .antMatchers("/api/v1/cart/**", "/api/v1/attendance/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()

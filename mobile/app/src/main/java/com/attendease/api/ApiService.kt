@@ -33,12 +33,18 @@ data class UserDto(
 )
 
 interface ApiService {
-    @POST("/auth/login")
+    @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): AuthResponse
 
-    @POST("/auth/register")
+    @POST("auth/register")
     suspend fun register(@Body request: RegisterRequest): UserDto
 
-    @GET("/auth/health")
+    @GET("auth/health")
     suspend fun health(): String
+
+    @POST("attendance/mark")
+    suspend fun markAttendance(@Body payload: Map<String, String>): Any
+
+    @GET("attendance/user/{userId}")
+    suspend fun getUserAttendance(@retrofit2.http.Path("userId") userId: Long): List<Any>
 }

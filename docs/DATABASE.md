@@ -58,7 +58,7 @@ CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 ## Enums
 
 ### UserRole
-- CUSTOMER
+- STUDENT
 - ADMIN
 
 ### AttendanceStatus
@@ -91,7 +91,7 @@ CREATE DATABASE attendease;
 - **email**: Must be unique and valid email format
 - **password_hash**: Must be hashed using bcrypt (never store plaintext)
 - **firstname/lastname**: Required, max 100 characters
-- **role**: Must be either CUSTOMER or ADMIN
+- **role**: Must be either STUDENT or ADMIN
 - **status**: Must be PRESENT, ABSENT, or LATE
 - **expiry_date**: Must be in the future
 

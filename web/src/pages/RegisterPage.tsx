@@ -44,25 +44,33 @@ export default function RegisterPage() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Register</h2>
+        <h2>Create Account</h2>
+        <p className="auth-subtitle">Join AttendEase to manage your attendance effortlessly</p>
+
         {error && <div className="error-message">{error}</div>}
+        
         <form onSubmit={handleRegister}>
           <div className="form-group">
-            <label>Email</label>
+            <label>Email Address</label>
             <input
               type="email"
               name="email"
+              className="auth-input"
+              placeholder="name@example.com"
               value={formData.email}
               onChange={handleInputChange}
               required
             />
           </div>
+          
           <div className="form-row">
             <div className="form-group">
               <label>First Name</label>
               <input
                 type="text"
                 name="firstname"
+                className="auth-input"
+                placeholder="John"
                 value={formData.firstname}
                 onChange={handleInputChange}
                 required
@@ -73,26 +81,33 @@ export default function RegisterPage() {
               <input
                 type="text"
                 name="lastname"
+                className="auth-input"
+                placeholder="Doe"
                 value={formData.lastname}
                 onChange={handleInputChange}
                 required
               />
             </div>
           </div>
+
           <div className="form-group">
             <label>Password</label>
             <input
               type="password"
               name="password"
+              className="auth-input"
+              placeholder="••••••••"
               value={formData.password}
               onChange={handleInputChange}
               required
             />
           </div>
+
           <div className="form-group">
             <label>Role</label>
             <select
               name="role"
+              className="auth-select"
               value={formData.role}
               onChange={handleInputChange}
             >
@@ -100,13 +115,15 @@ export default function RegisterPage() {
               <option value="ADMIN">Admin</option>
             </select>
           </div>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Loading...' : 'Register'}
+
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+        
+        <div className="auth-footer">
+          Already have an account? <Link to="/login" className="auth-link">Sign In</Link>
+        </div>
       </div>
     </div>
   );
