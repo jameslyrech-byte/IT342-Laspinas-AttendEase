@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { productService, CartItem } from '../services/productService';
 import { authService } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/home.css';
 
 const CartPage: React.FC = () => {
@@ -57,9 +57,9 @@ const CartPage: React.FC = () => {
       <header className="navbar">
         <h1>AttendEase</h1>
         <nav>
-          <a href="/">Home</a>
-          <a href="/products">Products</a>
-          <a href="/cart">Cart</a>
+          <Link to="/">Home</Link>
+          <Link to="/products">Products</Link>
+          <Link to="/cart">Cart</Link>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>
