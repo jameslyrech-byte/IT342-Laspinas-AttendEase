@@ -4,6 +4,8 @@ import { authService } from './services/authService';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
+import ProductsPage from './pages/ProductsPage';
+import CartPage from './pages/CartPage';
 import OAuthSuccessPage from './pages/OAuthSuccessPage';
 import './App.css';
 
@@ -23,6 +25,22 @@ function App() {
           element={
             <PrivateRoute>
               <HomePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <ProductsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <CartPage />
             </PrivateRoute>
           }
         />

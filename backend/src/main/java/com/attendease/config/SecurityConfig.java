@@ -29,8 +29,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors().and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**", "/api/v1/auth/**", "/api/v1/oauth2/**", "/api/v1/login/oauth2/**").permitAll()

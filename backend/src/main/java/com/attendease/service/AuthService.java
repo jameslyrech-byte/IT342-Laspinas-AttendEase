@@ -39,10 +39,7 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
-        String roleValue = request.getRole() == null ? "CUSTOMER" : request.getRole().trim().toUpperCase();
-        if ("STUDENT".equals(roleValue)) {
-            roleValue = "CUSTOMER";
-        }
+        String roleValue = request.getRole() == null ? "STUDENT" : request.getRole().trim().toUpperCase();
         try {
             user.setRole(UserRole.valueOf(roleValue));
         } catch (IllegalArgumentException e) {
@@ -66,7 +63,7 @@ public class AuthService {
                     newUser.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
                     newUser.setFirstname(firstname != null ? firstname : "");
                     newUser.setLastname(lastname != null ? lastname : "");
-                    newUser.setRole(UserRole.CUSTOMER);
+                    newUser.setRole(UserRole.STUDENT);
                     return userRepository.save(newUser);
                 });
 
@@ -119,7 +116,7 @@ public class AuthService {
                 user.getEmail(),
                 user.getFirstname(),
                 user.getLastname(),
-                user.getRole() == UserRole.CUSTOMER ? "STUDENT" : user.getRole().toString()
+                user.getRole().toString()
         );
     }
 

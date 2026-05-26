@@ -23,6 +23,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final AuthService authService;
     private final JwtUtil jwtUtil;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (!(authentication instanceof OAuth2AuthenticationToken)) {
@@ -46,7 +49,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         UserDto userDto = authService.processOAuth2User(email, firstname, lastname);
         String accessToken = jwtUtil.generateToken(userDto.getEmail(), userDto.getId());
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth-success")
+        String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth-success")
                 .queryParam("token", accessToken)
                 .queryParam("id", userDto.getId())
                 .queryParam("email", userDto.getEmail())
