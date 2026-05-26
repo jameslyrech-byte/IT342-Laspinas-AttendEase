@@ -335,12 +335,6 @@ export default function HomePage() {
           <button className={`nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => setActiveView('settings')}>
             Settings
           </button>
-          <button className="nav-item" onClick={() => navigate('/products')}>
-            Products
-          </button>
-          <button className="nav-item" onClick={() => navigate('/cart')}>
-            Cart
-          </button>
           <button onClick={handleLogout} className="nav-item logout-nav-item">
             Logout
           </button>

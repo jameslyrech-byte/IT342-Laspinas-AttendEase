@@ -46,19 +46,29 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             lastname = "";
         }
 
-        UserDto userDto = authService.processOAuth2User(email, firstname, lastname);
-        String accessToken = jwtUtil.generateToken(userDto.getEmail(), userDto.getId());
+        try {
+            UserDto userDto = authService.processOAuth2User(email, firstname, lastname);
+            String accessToken = jwtUtil.generateToken(userDto.getEmail(), userDto.getId());
 
-        String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth-success")
-                .queryParam("token", accessToken)
-                .queryParam("id", userDto.getId())
-                .queryParam("email", userDto.getEmail())
-                .queryParam("firstname", userDto.getFirstname())
-                .queryParam("lastname", userDto.getLastname())
-                .queryParam("role", userDto.getRole())
-                .build(true)
-                .toUriString();
+            String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth-success")
+                    .queryParam("token", accessToken)
+                    .queryParam("id", userDto.getId())
+                    .queryParam("email", userDto.getEmail())
+                    .queryParam("firstname", userDto.getFirstname())
+                    .queryParam("lastname", userDto.getLastname())
+                    .queryParam("role", userDto.getRole())
+                    .build()
+                    .encode()
+                    .toUriString();
 
-        response.sendRedirect(redirectUrl);
+            response.sendRedirect(redirectUrl);
+        } catch (Exception ex) {
+            String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/login")
+                    .queryParam("oauthError", ex.getMessage())
+                    .build()
+                    .encode()
+                    .toUriString();
+            response.sendRedirect(redirectUrl);
+        }
     }
 }
