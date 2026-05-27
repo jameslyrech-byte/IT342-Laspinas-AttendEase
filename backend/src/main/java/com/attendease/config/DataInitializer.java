@@ -1,8 +1,12 @@
 package com.attendease.config;
 
+import com.attendease.entity.User;
+import com.attendease.entity.UserRole;
 import com.attendease.entity.Product;
 import com.attendease.repository.ProductRepository;
+import com.attendease.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
@@ -13,9 +17,21 @@ import java.util.Arrays;
 public class DataInitializer implements CommandLineRunner {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
+        if (!userRepository.existsByEmail("admin@attendease.com")) {
+            User admin = new User();
+            admin.setEmail("admin@attendease.com");
+            admin.setPasswordHash(passwordEncoder.encode("admin123"));
+            admin.setFirstname("Admin");
+            admin.setLastname("User");
+            admin.setRole(UserRole.ADMIN);
+            userRepository.save(admin);
+        }
+
         if (productRepository.count() == 0) {
             Product p1 = new Product();
             p1.setName("Wireless Headphones");

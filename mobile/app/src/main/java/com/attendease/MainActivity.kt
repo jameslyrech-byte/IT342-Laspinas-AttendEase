@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
 fun AttendEaseApp(viewModel: AuthViewModel = viewModel()) {
     val navController = rememberNavController()
     val authState by viewModel.authState.collectAsState()
-    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
 
     // Store user data when login succeeds
     var currentUser by remember { mutableStateOf<UserDto?>(null) }
@@ -52,6 +51,12 @@ fun AttendEaseApp(viewModel: AuthViewModel = viewModel()) {
                 currentUser = (authState as AuthState.Success).user
                 navController.navigate("home") {
                     popUpTo("login") { inclusive = true }
+                }
+                viewModel.resetState()
+            }
+            AuthState.Registered -> {
+                navController.navigate("login") {
+                    popUpTo("register") { inclusive = true }
                 }
                 viewModel.resetState()
             }
@@ -67,28 +72,34 @@ fun AttendEaseApp(viewModel: AuthViewModel = viewModel()) {
                 },
                 onNavigateToRegister = {
                     navController.navigate("register")
-                }
+                },
+                viewModel = viewModel
             )
         }
 
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
-                    }
-                    viewModel.resetState()
+                    // Navigation handled by LaunchedEffect
                 },
                 onNavigateToLogin = {
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
-                }
+                },
+                viewModel = viewModel
             )
         }
 
         composable("home") {
-            currentUser?.let { user ->
+            val user = currentUser
+            if (user == null) {
+                LaunchedEffect(Unit) {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            } else {
                 HomeScreen(
                     user = user,
                     onLogout = {
@@ -96,7 +107,8 @@ fun AttendEaseApp(viewModel: AuthViewModel = viewModel()) {
                         navController.navigate("login") {
                             popUpTo("home") { inclusive = true }
                         }
-                    }
+                    },
+                    viewModel = viewModel
                 )
             }
         }

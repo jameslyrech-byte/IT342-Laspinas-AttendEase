@@ -1,6 +1,8 @@
 package com.attendease.controller;
 
 import com.attendease.entity.Attendance;
+import com.attendease.entity.UserRole;
+import com.attendease.repository.UserRepository;
 import com.attendease.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.Map;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final UserRepository userRepository;
 
     @GetMapping("/me")
     public ResponseEntity<?> myAttendance(Authentication authentication) {
@@ -44,6 +47,24 @@ public class AttendanceController {
         }
 
         return ResponseEntity.ok(Map.of("checkedIn", !attendanceService.getTodayAttendance(userId).isEmpty()));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> allAttendance(Authentication authentication) {
+        Long userId = authenticatedUserId(authentication);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login required");
+        }
+
+        boolean isAdmin = userRepository.findById(userId)
+                .map(user -> user.getRole() == UserRole.ADMIN)
+                .orElse(false);
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Admin access required");
+        }
+
+        return ResponseEntity.ok(attendanceService.getAllAttendanceForAdmin());
     }
 
     @PostMapping("/check-in")

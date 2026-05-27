@@ -415,6 +415,10 @@
   margin-bottom: 0;
 }
 
+.admin-panel {
+  margin-top: 18px;
+}
+
 .activity-item {
   display: flex;
   align-items: center;
@@ -423,6 +427,10 @@
   background: rgba(22, 36, 58, 0.72);
   border: 1px solid var(--border);
   border-radius: 8px;
+}
+
+.admin-activity-item .status-badge {
+  flex: 0 0 auto;
 }
 
 .activity-dot {

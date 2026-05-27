@@ -8,9 +8,21 @@ export interface AttendanceRecord {
   createdAt: string;
 }
 
+export interface AdminAttendanceRecord extends AttendanceRecord {
+  firstname: string;
+  lastname: string;
+  email: string;
+  role?: string;
+}
+
 export const attendanceService = {
   getMine: async (): Promise<AttendanceRecord[]> => {
     const response = await api.get('/attendance/me');
+    return response.data;
+  },
+
+  getAll: async (): Promise<AdminAttendanceRecord[]> => {
+    const response = await api.get('/attendance/all');
     return response.data;
   },
 
