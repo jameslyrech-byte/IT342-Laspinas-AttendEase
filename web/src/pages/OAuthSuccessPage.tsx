@@ -14,7 +14,7 @@ export default function OAuthSuccessPage() {
     const lastname = searchParams.get('lastname');
     const role = searchParams.get('role');
 
-    if (!token || !id || !email || !firstname || !lastname || !role) {
+    if (!token || !id || !email || firstname === null || lastname === null || !role) {
       navigate('/login');
       return;
     }

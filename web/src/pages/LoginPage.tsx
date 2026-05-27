@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { authService, LoginData } from '../services/authService';
 import '../styles/auth.css';
 
@@ -9,12 +9,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   React.useEffect(() => {
     if (authService.isAuthenticated()) {
       navigate('/');
     }
   }, [navigate]);
+
+  React.useEffect(() => {
+    const oauthError = searchParams.get('oauthError');
+    if (oauthError) {
+      setError(oauthError);
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
